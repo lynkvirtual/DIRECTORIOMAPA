@@ -73,8 +73,7 @@ const toast=t=>{const e=document.createElement('div');e.className='toast';e.text
 /* ===== Mapa (SVG propio; sustituible por Leaflet con tu hosting) ===== */
 function mkMap(host,items,o={}){if(typeof L==='undefined'){host.innerHTML='<p class="mu" style="padding:20px;text-align:center">No se pudo cargar el mapa (Leaflet). Revisa tu conexión o que el entorno permita cdnjs.cloudflare.com.</p>';return{set(){}}}let sel=o.sel;host.innerHTML='<div class="lf"></div>';
 const map=L.map($('.lf',host),{zoomControl:!o.nozoom,dragging:!o.nozoom,scrollWheelZoom:!o.nozoom,doubleClickZoom:!o.nozoom,touchZoom:!o.nozoom,boxZoom:!o.nozoom,keyboard:!o.nozoom});
-const th=matchMedia('(prefers-color-scheme: dark)').matches&&document.documentElement.dataset.theme!=='light'?'dark_all':'light_all';
-L.tileLayer(`https://{s}.basemaps.cartocdn.com/${th}/{z}/{x}/{y}{r}.png`,{subdomains:'abcd',maxZoom:19,attribution:'© OpenStreetMap · © CARTO'}).addTo(map);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
 const lay=L.layerGroup().addTo(map),ok=b=>isFinite(b.lat)&&isFinite(b.lng);
 const pin=(on,hl)=>L.divIcon({className:'',iconSize:[30,36],iconAnchor:[15,30],html:`<svg width="30" height="36" viewBox="-15 -30 30 36"><path d="M0 0C-8-10-14-16-14-24a14 14 0 1 1 28 0C14-16 8-10 0 0Z" fill="${on?'#4a9bff':'#e5202e'}" stroke="${hl?'#f5b53b':'#fff'}" stroke-width="${hl?3:2}"/><circle cy="-24" r="5" fill="#fff"/></svg>`});
 const draw=()=>{lay.clearLayers();items.filter(ok).forEach(b=>L.marker([b.lat,b.lng],{icon:pin(b.id===sel,b.destacado)}).on('click',()=>{sel=b.id;draw();o.onSel&&o.onSel(b.id)}).addTo(lay))};
